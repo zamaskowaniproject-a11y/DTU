@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Detective Task Unit – Kompendium DTU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --bg-alt: #020617;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --accent-soft: #0ea5e9;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000 100%);
+            color: var(--text);
+        }
+        .app-shell {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            background: linear-gradient(145deg, #020617, #0f172a);
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            box-shadow:
+                0 24px 60px rgba(15, 23, 42, 0.9),
+                0 0 0 1px rgba(15, 23, 42, 0.8);
+            max-width: 1100px;
+            width: 100%;
+            display: flex;
+            overflow: hidden;
+        }
+        .card-left {
+            flex: 0 0 280px;
+            padding: 24px;
+            border-right: 1px solid rgba(148, 163, 184, 0.25);
+            background: radial-gradient(circle at top left, #1e293b 0, #020617 55%, #000 100%);
+        }
+        .dtu-logo {
+            width: 140px;
+            display: block;
+            margin: 0 auto 18px auto;
+            filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+        }
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .brand-title {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+        }
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--accent);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.9);
+        }
+        .side-text {
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+        .side-list {
+            margin-top: 12px;
+            padding-left: 18px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .side-list li { margin-bottom: 4px; }
+        .card-right {
+            flex: 1;
+            padding: 24px 28px;
+        }
+        .section-header { margin-bottom: 18px; }
+        .section-title { font-size: 20px; font-weight: 600; }
+        .section-subtitle { font-size: 13px; color: var(--muted); }
+        #login-view { display: block; }
+        #app-view { display: none; }
+        .form-group {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        label { font-size: 13px; color: var(--muted); }
+        input[type="password"],
+        input[type="email"],
+        input[type="text"] {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+        }
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+        }
+        textarea {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .btn-row {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 999px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+            color: #0b1120;
+            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.45);
+        }
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--muted);
+            border: 1px solid rgba(148, 163, 184, 0.5);
+        }
+        .btn-danger { background: var(--danger); color: #0b1120; }
+        .btn-success { background: var(--success); color: #0b1120; }
+        .error-text { margin-top: 10px; font-size: 12px; color: var(--danger); }
+        .success-text { margin-top: 10px; font-size: 12px; color: var(--success); }
+        .user-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent);
+            overflow: hidden;
+        }
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .user-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .user-name { font-size: 13px; font-weight: 600; }
+        .user-rank { font-size: 11px; color: var(--muted); }
+        .user-role { font-size: 11px; color: var(--accent); }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .search-input { flex: 1; }
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+        .app-title { font-size: 19px; font-weight: 600; }
+        .app-meta { font-size: 12px; color: var(--muted); }
+        .app-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 18px;
+        }
+        .menu {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            padding: 12px;
+        }
+        .menu-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+        .menu-group-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin: 10px 0 4px;
+        }
+        .menu-list { list-style: none; padding: 0; margin: 0; }
+        .menu-item-btn {
+            width: 100%;
+            text-align: left;
+            padding: 7px 10px;
+            margin-bottom: 4px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .menu-item-btn:hover { background: rgba(15, 23, 42, 0.9); }
+        .menu-item-btn.active {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: var(--accent);
+        }
+        .content {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            padding: 18px 18px 20px;
+            max-height: 70vh;
+            overflow: auto;
+        }
+        .content-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+        .content-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+        .content-section { display: none; font-size: 14px; line-height: 1.6; }
+        .content-section.active { display: block; }
+        .content-section h3 { font-size: 15px; margin-top: 14px; margin-bottom: 6px; }
+        .content-section p { margin: 4px 0; }
+        .content-section ul { margin: 4px 0 8px; padding-left: 20px; }
+        .content-section li { margin-bottom: 3px; }
+        .note-item {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        .note-date { font-size: 11px; color: var(--muted); }
+        .case-item {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        .case-title { font-weight: 600; }
+        .case-meta { font-size: 11px; color: var(--muted); }
+        .doc-link {
+            font-size: 12px;
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .case-actions,
+        .note-actions,
+        .user-actions {
+            margin-top: 6px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 900px) {
+            .card { flex-direction: column; }
+            .card-left {
+                flex: 0 0 auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+            }
+            .app-layout { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .card-right { padding: 18px 16px; }
+            .content { max-height: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-shell">
+    <div class="card">
+        <div class="card-left">
+            <img src="Dtulogo.png" alt="DTU Logo" class="dtu-logo">
+            <div class="brand">
+                <span class="brand-title">Detective Task Unit</span>
+                <span class="brand-subtitle">Kompendium operacyjne DTU – dostęp ograniczony</span>
+                <span class="badge">
+                    <span class="badge-dot"></span>
+                    DTU ACCESS LEVEL: INTERNAL
+                </span>
+            </div>
+            <p class="side-text">
+                Kompendium przeznaczone jest dla funkcjonariuszy jednostki
+                <strong>Detective Task Unit</strong>. Zawiera podstawowe zasady,
+                procedury oraz materiały operacyjne dotyczące prowadzenia śledztw,
+                działań undercover oraz analizy spraw. Ma charakter roboczy i
+                jest aktualizowane wraz z rozwojem praktyki operacyjnej.
+            </p>
+            <ul class="side-list">
+                <li>Hierarchia i role w DTU</li>
+                <li>Procedury miejsca zdarzenia</li>
+                <li>Łańcuch dowodowy</li>
+                <li>Analiza sprawy i dokumentacja</li>
+                <li>Pojazdy operacyjne i dobór środka transportu</li>
+            </ul>
+        </div>
+
+        <div class="card-right">
+            <div id="login-view">
+                <div class="section-header">
+                    <div class="section-title">Logowanie do kompendium DTU</div>
+                    <div class="section-subtitle">
+                        Dostęp wyłącznie dla uprawnionych funkcjonariuszy. Wprowadź dane logowania.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email-input">Email użytkownika</label>
+                    <input type="email" id="email-input" placeholder="np. Comm.dtu.223">
+                </div>
+                <div class="form-group">
+                    <label for="password-input">Hasło dostępu</label>
+                    <input type="password" id="password-input" placeholder="Wprowadź hasło DTU">
+                </div>
+                <div class="btn-row">
+                    <button class="btn-primary" id="login-btn">Zaloguj</button>
+                    <button class="btn-secondary" id="clear-btn">Wyczyść</button>
+                </div>
+                <div id="login-error" class="error-text" style="display:none;">
+                    Nieprawidłowy email lub hasło. Sprawdź wpis i spróbuj ponownie.
+                </div>
+            </div>
+
+            <div id="app-view">
+                <div class="user-panel">
+                    <div class="user-info">
+                        <div class="user-avatar" id="user-avatar">DT</div>
+                        <div class="user-meta">
+                            <span class="user-name" id="user-name">Użytkownik DTU</span>
+                            <span class="user-rank" id="user-rank">Ranga</span>
+                            <span class="user-role" id="user-role">Rola</span>
+                        </div>
+                    </div>
+                    <button class="btn-secondary" id="logout-btn">Wyloguj</button>
+                </div>
+
+                <div class="app-header">
+                    <div class="app-title">Kompendium DTU – Detective Task Unit</div>
+                    <div class="app-meta">
+                        Tryb: <strong>wewnętrzny</strong> · Dostęp przyznany · Hasło zweryfikowane
+                    </div>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="search-input" class="search-input" placeholder="Wyszukaj w kompendium...">
+                    <button class="btn-secondary" id="search-clear-btn">Wyczyść</button>
+                </div>
+
+                <div class="app-layout">
+                    <nav class="menu">
+                        <div class="menu-title">Nawigacja po kompendium</div>
+
+                        <div class="menu-group-label">Podstawy jednostki</div>
+                        <ul class="menu-list">
+                            <li><button class="menu-item-btn active" data-target="postanowienia">Postanowienia ogólne</button></li>
+                            <li><button class="menu-item-btn" data-target="hierarchia">Hierarchia Wydziału DTU</button></li>
+                            <li><button class="menu-item-btn" data-target="funkcje">Dodatkowe funkcje</button></li>
+                        </ul>
+
+                        <div class="menu-group-label">Procedury śledcze</div>
+                        <ul class="menu-list">
+                            <li><button class="menu-item-btn" data-target="kroki-sledztwa">Podstawowe kroki śledztwa</button></li>
+                            <li><button class="menu-item-btn" data-target="zlote-pytanie">Złote pytanie śledcze</button></li>
+                            <li><button class="menu-item-btn" data-target="lancuch-dowodowy">Łańcuch dowodowy (Chain of Custody)</button></li>
+                            <li><button class="menu-item-btn" data-target="checklista-miejsca">Checklista miejsca zdarzenia</button></li>
+                            <li><button class="menu-item-btn" data-target="analiza-sprawy">Analiza sprawy</button></li>
+                        </ul>
+
+                        <div class="menu-group-label">Pojazdy operacyjne</div>
+                        <ul class="menu-list">
+                            <li><button class="menu-item-btn" data-target="pojazdy-operacyjne">Pojazdy operacyjne DTU</button></li>
+                            <li><button class="menu-item-btn" data-target="zasada-doboru">Zasada doboru pojazdu</button></li>
+                        </ul>
+
+                        <div class="menu-group-label">Dokumenty i notatki</div>
+                        <ul class="menu-list">
+                            <li><button class="menu-item-btn" data-target="dokumenty-dtu">Dokumenty DTU (sprawy, raporty)</button></li>
+                            <li><button class="menu-item-btn" data-target="notatki-detektywa">Notatki detektywa</button></li>
+                        </ul>
+
+                        <div class="menu-group-label" id="admin-menu-label" style="display:none;">Panel administratora</div>
+                        <ul class="menu-list" id="admin-menu" style="display:none;">
+                            <li><button class="menu-item-btn" data-target="admin-panel">Zarządzanie użytkownikami</button></li>
+                        </ul>
+                    </nav>
+
+                    <section class="content">
+                        <div class="content-title" id="content-title">Postanowienia ogólne</div>
+                        <div class="content-subtitle" id="content-subtitle">
+                            Podstawowe założenia funkcjonowania Detective Task Unit.
+                        </div>
+
+                        <!-- POSTANOWIENIA OGÓLNE -->
+                        <article id="postanowienia" class="content-section active">
+                            <h3>Cel funkcjonowania DTU</h3>
+                            <p>
+                                Detective Task Unit (DTU) jest wyspecjalizowaną jednostką zajmującą się prowadzeniem
+                                śledztw w sprawach wymagających szczególnej analizy, pracy operacyjnej oraz
+                                koordynacji działań między różnymi służbami. Kompendium ma za zadanie ujednolicić
+                                sposób działania detektywów oraz zapewnić spójność dokumentacji.
+                            </p>
+                            <h3>Zakres odpowiedzialności</h3>
+                            <p>
+                                Funkcjonariusze DTU odpowiadają za:
+                            </p>
+                            <ul>
+                                <li>prowadzenie śledztw w sprawach priorytetowych,</li>
+                                <li>koordynację działań operacyjnych,</li>
+                                <li>utrzymanie poprawnego łańcucha dowodowego,</li>
+                                <li>sporządzanie raportów i notatek operacyjnych.</li>
+                            </ul>
+                            <h3>Standardy pracy</h3>
+                            <p>
+                                Każde działanie powinno być:
+                            </p>
+                            <ul>
+                                <li>udokumentowane,</li>
+                                <li>zgodne z procedurami,</li>
+                                <li>przejrzyste dla przełożonych,</li>
+                                <li>możliwe do odtworzenia na podstawie raportów.</li>
+                            </ul>
+                        </article>
+
+                        <!-- HIERARCHIA -->
+                        <article id="hierarchia" class="content-section">
+                            <h3>Struktura dowodzenia DTU</h3>
+                            <p>
+                                Wydział DTU posiada jasno określoną hierarchię, która ma zapewnić sprawne
+                                podejmowanie decyzji oraz odpowiedzialność za prowadzone sprawy.
+                            </p>
+                            <ul>
+                                <li><strong>Commander DTU</strong> – odpowiada za całość działań jednostki, zatwierdza kluczowe decyzje.</li>
+                                <li><strong>Senior Detective</strong> – prowadzi najważniejsze sprawy, nadzoruje młodszych detektywów.</li>
+                                <li><strong>Detective</strong> – realizuje czynności operacyjne, prowadzi sprawy zgodnie z wytycznymi.</li>
+                                <li><strong>Analyst</strong> – wspiera analizą danych, raportów i materiału dowodowego.</li>
+                            </ul>
+                            <h3>Komunikacja w hierarchii</h3>
+                            <p>
+                                Informacje przekazywane są w sposób uporządkowany – od detektywa do przełożonego,
+                                a decyzje strategiczne spływają z góry do zespołów operacyjnych.
+                            </p>
+                        </article>
+
+                        <!-- FUNKCJE -->
+                        <article id="funkcje" class="content-section">
+                            <h3>Dodatkowe funkcje w DTU</h3>
+                            <p>
+                                Oprócz podstawowych ról, w DTU mogą funkcjonować dodatkowe funkcje wspierające
+                                prowadzenie śledztw.
+                            </p>
+                            <ul>
+                                <li><strong>Koordynator operacyjny</strong> – planuje działania w terenie.</li>
+                                <li><strong>Specjalista ds. undercover</strong> – odpowiada za działania pod przykryciem.</li>
+                                <li><strong>Specjalista ds. dokumentacji</strong> – dba o poprawność raportów i archiwizację.</li>
+                            </ul>
+                            <p>
+                                Funkcje te mogą być przypisane czasowo, w zależności od potrzeb konkretnej sprawy.
+                            </p>
+                        </article>
+
+                        <!-- KROKI ŚLEDZTWA -->
+                        <article id="kroki-sledztwa" class="content-section">
+                            <h3>Podstawowe kroki śledztwa</h3>
+                            <p>
+                                Każde śledztwo powinno przebiegać według określonego schematu, który zapewnia
+                                kompletność działań i minimalizuje ryzyko pominięcia istotnych elementów.
+                            </p>
+                            <ul>
+                                <li>Przyjęcie zgłoszenia i wstępna ocena sprawy.</li>
+                                <li>Zabezpieczenie miejsca zdarzenia.</li>
+                                <li>Zebranie dowodów i materiału poglądowego.</li>
+                                <li>Przesłuchanie świadków i osób powiązanych.</li>
+                                <li>Analiza zebranych informacji.</li>
+                                <li>Tworzenie hipotez i scenariuszy zdarzeń.</li>
+                                <li>Weryfikacja hipotez poprzez działania operacyjne.</li>
+                                <li>Sporządzenie raportu końcowego.</li>
+                            </ul>
+                        </article>
+
+                        <!-- ZŁOTE PYTANIE -->
+                        <article id="zlote-pytanie" class="content-section">
+                            <h3>Złote pytanie śledcze</h3>
+                            <p>
+                                Każdy detektyw powinien zadać sobie kluczowe pytanie:
+                            </p>
+                            <p><strong>„Co musiało się wydarzyć, żeby obecny stan rzeczy był możliwy?”</strong></p>
+                            <p>
+                                To pytanie pomaga spojrzeć na sprawę z perspektywy sprawcy i ofiary, a także
+                                uporządkować chronologię zdarzeń.
+                            </p>
+                        </article>
+
+                        <!-- ŁAŃCUCH DOWODOWY -->
+                        <article id="lancuch-dowodowy" class="content-section">
+                            <h3>Łańcuch dowodowy (Chain of Custody)</h3>
+                            <p>
+                                Łańcuch dowodowy to pełna historia dowodu – od momentu jego zabezpieczenia,
+                                przez kolejne osoby i miejsca, aż po archiwizację. Każda zmiana posiadacza
+                                dowodu musi być odnotowana.
+                            </p>
+                            <ul>
+                                <li>Dokładne oznaczenie dowodu (czas, miejsce, osoba zabezpieczająca).</li>
+                                <li>Opis warunków przechowywania.</li>
+                                <li>Rejestrowanie każdej zmiany posiadacza.</li>
+                                <li>Unikanie nieuzasadnionego kontaktu z dowodem.</li>
+                            </ul>
+                            <p>
+                                Naruszenie łańcucha dowodowego może skutkować podważeniem wiarygodności dowodu
+                                w postępowaniu.
+                            </p>
+                        </article>
+
+                        <!-- CHECKLISTA MIEJSCA -->
+                        <article id="checklista-miejsca" class="content-section">
+                            <h3>Checklista miejsca zdarzenia</h3>
+                            <p>
+                                Miejsce zdarzenia jest kluczowym źródłem informacji. Detektyw powinien działać
+                                według checklisty, aby nie pominąć istotnych elementów.
+                            </p>
+                            <ul>
+                                <li>Zabezpieczenie terenu przed osobami postronnymi.</li>
+                                <li>Dokumentacja fotograficzna i wideo.</li>
+                                <li>Oznaczenie śladów i dowodów.</li>
+                                <li>Wstępna rekonstrukcja przebiegu zdarzenia.</li>
+                                <li>Sprawdzenie możliwych dróg wejścia i wyjścia.</li>
+                            </ul>
+                        </article>
+
+                        <!-- ANALIZA SPRAWY -->
+                        <article id="analiza-sprawy" class="content-section">
+                            <h3>Analiza sprawy</h3>
+                            <p>
+                                Analiza sprawy polega na uporządkowaniu zebranych informacji, wyciągnięciu
+                                wniosków oraz przygotowaniu scenariuszy zdarzeń.
+                            </p>
+                            <ul>
+                                <li>Tworzenie osi czasu zdarzeń.</li>
+                                <li>Identyfikacja kluczowych punktów zwrotnych.</li>
+                                <li>Porównanie wersji świadków.</li>
+                                <li>Weryfikacja spójności materiału dowodowego.</li>
+                            </ul>
+                            <p>
+                                Dobrze przeprowadzona analiza pozwala na podjęcie trafnych decyzji operacyjnych.
+                            </p>
+                        </article>
+
+                        <!-- POJAZDY OPERACYJNE -->
+                        <article id="pojazdy-operacyjne" class="content-section">
+                            <h3>Pojazdy operacyjne DTU</h3>
+                            <p>
+                                DTU korzysta z różnych typów pojazdów, w zależności od charakteru sprawy
+                                i wymagań operacyjnych.
+                            </p>
+                            <ul>
+                                <li>Pojazdy nieoznakowane – do dyskretnej obserwacji.</li>
+                                <li>Pojazdy oznakowane – do działań jawnych.</li>
+                                <li>Pojazdy specjalne – do działań w trudnym terenie.</li>
+                            </ul>
+                        </article>
+
+                        <!-- ZASADA DOBORU -->
+                        <article id="zasada-doboru" class="content-section">
+                            <h3>Zasada doboru pojazdu</h3>
+                            <p>
+                                Dobór pojazdu powinien wynikać z:
+                            </p>
+                            <ul>
+                                <li>charakteru sprawy,</li>
+                                <li>rodzaju terenu,</li>
+                                <li>potrzeby dyskrecji lub jawności,</li>
+                                <li>liczby funkcjonariuszy biorących udział w akcji.</li>
+                            </ul>
+                        </article>
+
+                        <!-- DOKUMENTY DTU -->
+                        <article id="dokumenty-dtu" class="content-section">
+                            <h3>Dokumenty DTU – sprawy i raporty</h3>
+                            <p>
+                                W tej sekcji znajdują się sprawy prowadzone przez DTU oraz przypisane do nich
+                                raporty w formie plików PDF. Detektywi mogą dodawać nowe sprawy oraz dołączać
+                                raporty, o ile nie mają zablokowanej tej funkcji przez administratora.
+                            </p>
+
+                            <h3>Dodaj nową sprawę</h3>
+                            <div class="form-group">
+                                <label for="case-title-input">Tytuł sprawy</label>
+                                <input type="text" id="case-title-input" placeholder="np. Operacja przeciwko grupie X">
+                            </div>
+                            <div class="form-group">
+                                <label for="case-desc-input">Opis sprawy</label>
+                                <textarea id="case-desc-input" placeholder="Krótki opis sprawy..."></textarea>
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn-primary" id="case-add-btn">Dodaj sprawę</button>
+                            </div>
+
+                            <h3>Lista spraw</h3>
+                            <div id="cases-list"></div>
+                        </article>
+
+                        <!-- NOTATKI DETEKTYWA -->
+                        <article id="notatki-detektywa" class="content-section">
+                            <h3>Notatki detektywa</h3>
+                            <p>
+                                Notatki detektywa pozwalają na zapisywanie własnych obserwacji, hipotez oraz
+                                informacji roboczych związanych ze sprawami. Notatki są przypisane do konta
+                                użytkownika i mogą być edytowane oraz usuwane.
+                            </p>
+
+                            <h3>Dodaj notatkę</h3>
+                            <div class="form-group">
+                                <label for="note-content-input">Treść notatki</label>
+                                <textarea id="note-content-input" placeholder="Wpisz treść notatki..."></textarea>
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn-primary" id="note-add-btn">Zapisz notatkę</button>
+                            </div>
+
+                            <h3>Twoje notatki</h3>
+                            <div id="notes-list"></div>
+                        </article>
+
+                        <!-- PANEL ADMINISTRATORA -->
+                        <article id="admin-panel" class="content-section">
+                            <h3>Panel administratora – zarządzanie użytkownikami</h3>
+                            <p>
+                                Administrator DTU może dodawać nowych użytkowników z dostępem do kompendium,
+                                przeglądać listę kont, usuwać je, blokować możliwość dodawania raportów oraz
+                                edytować dane kont (imię, ranga, avatar).
+                            </p>
+
+                            <h3>Dodaj nowego użytkownika</h3>
+                            <div class="form-group">
+                                <label for="admin-user-email-input">Email użytkownika</label>
+                                <input type="email" id="admin-user-email-input" placeholder="np. Detective.001">
+                            </div>
+                            <div class="form-group">
+                                <label for="admin-user-pass-input">Hasło użytkownika</label>
+                                <input type="password" id="admin-user-pass-input" placeholder="Hasło dla użytkownika">
+                            </div>
+                            <div class="form-group">
+                                <label for="admin-user-name-input">Imię / pseudonim</label>
+                                <input type="text" id="admin-user-name-input" placeholder="np. Detective Alpha">
+                            </div>
+                            <div class="form-group">
+                                <label for="admin-user-rank-input">Ranga</label>
+                                <input type="text" id="admin-user-rank-input" placeholder="np. Detective / Senior Detective">
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn-primary" id="admin-user-add-btn">Dodaj użytkownika</button>
+                            </div>
+
+                            <div id="admin-user-msg" class="error-text" style="display:none;"></div>
+                            <div id="admin-user-msg-success" class="success-text" style="display:none;"></div>
+
+                            <h3>Lista użytkowników</h3>
+                            <div id="users-list"></div>
+                        </article>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const API_BASE = "http://localhost:3000";
+
+    const loginView = document.getElementById("login-view");
+    const appView = document.getElementById("app-view");
+    const emailInput = document.getElementById("email-input");
+    const passwordInput = document.getElementById("password-input");
+    const loginBtn = document.getElementById("login-btn");
+    const clearBtn = document.getElementById("clear-btn");
+    const loginError = document.getElementById("login-error");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    const menuButtons = document.querySelectorAll(".menu-item-btn");
+    const sections = document.querySelectorAll(".content-section");
+    const contentTitle = document.getElementById("content-title");
+    const contentSubtitle = document.getElementById("content-subtitle");
+
+    const userAvatar = document.getElementById("user-avatar");
+    const userName = document.getElementById("user-name");
+    const userRank = document.getElementById("user-rank");
+    const userRole = document.getElementById("user-role");
+
+    const adminMenuLabel = document.getElementById("admin-menu-label");
+    const adminMenu = document.getElementById("admin-menu");
+
+    const searchInput = document.getElementById("search-input");
+    const searchClearBtn = document.getElementById("search-clear-btn");
+
+    const caseTitleInput = document.getElementById("case-title-input");
+    const caseDescInput = document.getElementById("case-desc-input");
+    const caseAddBtn = document.getElementById("case-add-btn");
+    const casesList = document.getElementById("cases-list");
+
+    const noteContentInput = document.getElementById("note-content-input");
+    const noteAddBtn = document.getElementById("note-add-btn");
+    const notesList = document.getElementById("notes-list");
+
+    const adminUserEmailInput = document.getElementById("admin-user-email-input");
+    const adminUserPassInput = document.getElementById("admin-user-pass-input");
+    const adminUserNameInput = document.getElementById("admin-user-name-input");
+    const adminUserRankInput = document.getElementById("admin-user-rank-input");
+    const adminUserAddBtn = document.getElementById("admin-user-add-btn");
+    const adminUserMsg = document.getElementById("admin-user-msg");
+    const adminUserMsgSuccess = document.getElementById("admin-user-msg-success");
+    const usersList = document.getElementById("users-list");
+
+    let currentUser = null;
+
+    const subtitles = {
+        "postanowienia": "Podstawowe założenia funkcjonowania Detective Task Unit.",
+        "hierarchia": "Struktura dowodzenia i podział ról w wydziale DTU.",
+        "funkcje": "Dodatkowe specjalizacje detektywów w ramach DTU.",
+        "kroki-sledztwa": "Standardowy przebieg śledztwa od zgłoszenia do archiwizacji.",
+        "zlote-pytanie": "Kluczowe pytania, które powinien zadać każdy śledczy.",
+        "lancuch-dowodowy": "Zasady dokumentowania i śledzenia dowodów rzeczowych.",
+        "checklista-miejsca": "Lista kontrolna działań na miejscu zdarzenia.",
+        "analiza-sprawy": "Metody analizy materiału dowodowego i dokumentacji.",
+        "pojazdy-operacyjne": "Kategorie pojazdów wykorzystywanych przez DTU.",
+        "zasada-doboru": "Zasady doboru odpowiedniego pojazdu do operacji.",
+        "dokumenty-dtu": "Sprawy DTU oraz przypisane do nich raporty PDF.",
+        "notatki-detektywa": "Prywatne notatki detektywa przypisane do konta użytkownika.",
+        "admin-panel": "Panel administratora DTU – zarządzanie użytkownikami."
+    };
+
+    function setActiveSection(targetId) {
+        sections.forEach(section => {
+            section.classList.toggle("active", section.id === targetId);
+        });
+
+        menuButtons.forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.target === targetId);
+        });
+
+        const activeButton = Array.from(menuButtons).find(btn => btn.dataset.target === targetId);
+        if (activeButton) {
+            contentTitle.textContent = activeButton.textContent.trim();
+        }
+
+        contentSubtitle.textContent = subtitles[targetId] || "";
+    }
+
+    function updateUserPanel(user) {
+        currentUser = user;
+        userName.textContent = user.name || user.email;
+        userRank.textContent = user.rank || "Ranga nieznana";
+        userRole.textContent = user.role === "admin" ? "Administrator DTU" : "Detektyw DTU";
+
+        userAvatar.innerHTML = "";
+        if (user.avatarUrl) {
+            const img = document.createElement("img");
+            img.src = user.avatarUrl;
+            img.alt = "Avatar";
+            userAvatar.appendChild(img);
+        } else {
+            const initials = (user.name || user.email || "DTU")
+                .split(" ")
+                .map(part => part[0])
+                .join("")
+                .toUpperCase()
+                .slice(0, 2);
+            userAvatar.textContent = initials;
+        }
+
+        if (user.role === "admin") {
+            adminMenuLabel.style.display = "block";
+            adminMenu.style.display = "block";
+            loadUsers();
+        } else {
+            adminMenuLabel.style.display = "none";
+            adminMenu.style.display = "none";
+        }
+    }
+
+    function handleLogin() {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!email || !password) {
+            loginError.textContent = "Wprowadź email i hasło.";
+            loginError.style.display = "block";
+            return;
+        }
+
+        fetch(API_BASE + "/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Nieprawidłowe dane logowania");
+                }
+                return res.json();
+            })
+            .then(user => {
+                loginError.style.display = "none";
+                loginView.style.display = "none";
+                appView.style.display = "block";
+                updateUserPanel(user);
+                loadCases();
+                loadNotes();
+            })
+            .catch(() => {
+                loginError.textContent = "Nieprawidłowy email lub hasło.";
+                loginError.style.display = "block";
+            });
+    }
+
+    function clearLogin() {
+        emailInput.value = "";
+        passwordInput.value = "";
+        loginError.style.display = "none";
+        emailInput.focus();
+    }
+
+    function handleLogout() {
+        currentUser = null;
+        appView.style.display = "none";
+        loginView.style.display = "block";
+        emailInput.value = "";
+        passwordInput.value = "";
+    }
+
+    function filterContentBySearch(query) {
+        const lowerQuery = query.toLowerCase();
+
+        sections.forEach(section => {
+            if (!section.classList.contains("active")) return;
+
+            const text = section.innerText.toLowerCase();
+            if (!lowerQuery) {
+                section.style.opacity = "1";
+            } else {
+                section.style.opacity = text.includes(lowerQuery) ? "1" : "0.4";
+            }
+        });
+    }
+
+    function loadCases() {
+        fetch(API_BASE + "/api/cases")
+            .then(res => res.json())
+            .then(cases => {
+                casesList.innerHTML = "";
+                if (!cases.length) {
+                    casesList.innerHTML = "<p>Brak spraw w systemie.</p>";
+                    return;
+                }
+
+                cases.forEach(c => {
+                    const div = document.createElement("div");
+                    div.className = "case-item";
+
+                    const title = document.createElement("div");
+                    title.className = "case-title";
+                    title.textContent = c.title;
+
+                    const meta = document.createElement("div");
+                    meta.className = "case-meta";
+                    meta.textContent = `ID: ${c.id} · Utworzył: ${c.createdBy}`;
+
+                    div.appendChild(title);
+                    div.appendChild(meta);
+
+                    if (c.description) {
+                        const desc = document.createElement("div");
+                        desc.textContent = c.description;
+                        div.appendChild(desc);
+                    }
+
+                    const docsHeader = document.createElement("div");
+                    docsHeader.style.marginTop = "4px";
+                    docsHeader.textContent = "Raporty PDF:";
+                    div.appendChild(docsHeader);
+
+                    const docsList = document.createElement("div");
+                    if (c.documents && c.documents.length) {
+                        c.documents.forEach(d => {
+                            const link = document.createElement("a");
+                            link.className = "doc-link";
+                            link.textContent = d.originalName;
+                            link.href = API_BASE + `/api/documents/${d.filename}`;
+                            link.target = "_blank";
+                            docsList.appendChild(link);
+                            docsList.appendChild(document.createElement("br"));
+                        });
+                    } else {
+                        docsList.textContent = "Brak raportów.";
+                    }
+                    div.appendChild(docsList);
+
+                    const actions = document.createElement("div");
+                    actions.className = "case-actions";
+
+                    const editBtn = document.createElement("button");
+                    editBtn.className = "btn-secondary";
+                    editBtn.textContent = "Edytuj sprawę";
+                    editBtn.addEventListener("click", function () {
+                        const newTitle = prompt("Nowy tytuł sprawy:", c.title);
+                        if (newTitle === null) return;
+                        const newDesc = prompt("Nowy opis sprawy:", c.description || "");
+                        if (newDesc === null) return;
+
+                        fetch(API_BASE + `/api/cases/${c.id}`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                title: newTitle,
+                                description: newDesc
+                            })
+                        })
+                            .then(res => {
+                                if (!res.ok) throw new Error("Błąd edycji sprawy");
+                                return res.json();
+                            })
+                            .then(() => {
+                                loadCases();
+                            })
+                            .catch(() => {
+                                alert("Nie udało się edytować sprawy.");
+                            });
+                    });
+
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.className = "btn-danger";
+                    deleteBtn.textContent = "Usuń sprawę";
+                    deleteBtn.addEventListener("click", function () {
+                        if (!confirm("Na pewno usunąć tę sprawę?")) return;
+
+                        fetch(API_BASE + `/api/cases/${c.id}`, {
+                            method: "DELETE"
+                        })
+                            .then(res => {
+                                if (!res.ok) throw new Error("Błąd usuwania sprawy");
+                                return res.json();
+                            })
+                            .then(() => {
+                                loadCases();
+                            })
+                            .catch(() => {
+                                alert("Nie udało się usunąć sprawy.");
+                            });
+                    });
+
+                    actions.appendChild(editBtn);
+                    actions.appendChild(deleteBtn);
+
+                    const uploadForm = document.createElement("form");
+                    uploadForm.enctype = "multipart/form-data";
+                    uploadForm.style.marginTop = "6px";
+
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.accept = "application/pdf";
+
+                    const uploadBtn = document.createElement("button");
+                    uploadBtn.type = "submit";
+                    uploadBtn.className = "btn-secondary";
+                    uploadBtn.textContent = "Dodaj raport PDF";
+
+                    uploadForm.appendChild(fileInput);
+                    uploadForm.appendChild(uploadBtn);
+
+                    uploadForm.addEventListener("submit", function (e) {
+                        e.preventDefault();
+                        if (!currentUser) return;
+
+                        if (currentUser.canAddReports === false) {
+                            alert("Masz zablokowaną możliwość dodawania raportów.");
+                            return;
+                        }
+
+                        if (!fileInput.files.length) {
+                            alert("Wybierz plik PDF.");
+                            return;
+                        }
+
+                        const formData = new FormData();
+                        formData.append("pdf", fileInput.files[0]);
+                        formData.append("uploadedBy", currentUser.email);
+
+                        fetch(API_BASE + `/api/cases/${c.id}/documents`, {
+                            method: "POST",
+                            body: formData
+                        })
+                            .then(res => {
+                                if (!res.ok) throw new Error("Błąd uploadu");
+                                return res.json();
+                            })
+                            .then(() => {
+                                loadCases();
+                            })
+                            .catch(err => {
+                                alert("Nie udało się dodać raportu: " + err.message);
+                            });
+                    });
+
+                    div.appendChild(actions);
+                    div.appendChild(uploadForm);
+
+                    casesList.appendChild(div);
+                });
+            })
+            .catch(() => {
+                casesList.innerHTML = "<p>Nie udało się pobrać spraw.</p>";
+            });
+    }
+
+    function addCase() {
+        if (!currentUser) return;
+
+        const title = caseTitleInput.value.trim();
+        const desc = caseDescInput.value.trim();
+
+        if (!title || !desc) {
+            alert("Wprowadź tytuł i opis sprawy.");
+            return;
+        }
+
+        fetch(API_BASE + "/api/cases", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                title,
+                description: desc,
+                createdBy: currentUser.email
+            })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Błąd dodawania sprawy");
+                return res.json();
+            })
+            .then(() => {
+                caseTitleInput.value = "";
+                caseDescInput.value = "";
+                loadCases();
+            })
+            .catch(() => {
+                alert("Nie udało się dodać sprawy.");
+            });
+    }
+
+    function loadNotes() {
+        if (!currentUser) return;
+
+        fetch(API_BASE + `/api/notes?email=${encodeURIComponent(currentUser.email)}`)
+            .then(res => res.json())
+            .then(notes => {
+                notesList.innerHTML = "";
+                if (!notes.length) {
+                    notesList.innerHTML = "<p>Brak notatek.</p>";
+                    return;
+                }
+
+                notes.forEach(n => {
+                    const div = document.createElement("div");
+                    div.className = "note-item";
+
+                    const content = document.createElement("div");
+                    content.textContent = n.content;
+
+                    const date = document.createElement("div");
+                    date.className = "note-date";
+                    date.textContent = `Utworzono: ${new Date(n.createdAt).toLocaleString()}`;
+
+                    const actions = document.createElement("div");
+                    actions.className = "note-actions";
+
+                    const editBtn = document.createElement("button");
+                    editBtn.className = "btn-secondary";
+                    editBtn.textContent = "Edytuj notatkę";
+                    editBtn.addEventListener("click", function () {
+                        const newContent = prompt("Nowa treść notatki:", n.content);
+                        if (newContent === null) return;
+
+                        fetch(API_BASE + `/api/notes/${n.id}`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ content: newContent })
+                        })
+                            .then(res => {
+                                if (!res.ok) throw new Error("Błąd edycji notatki");
+                                return res.json();
+                            })
+                            .then(() => {
+                                loadNotes();
+                            })
+                            .catch(() => {
+                                alert("Nie udało się edytować notatki.");
+                            });
+                    });
+
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.className = "btn-danger";
+                    deleteBtn.textContent = "Usuń notatkę";
+                    deleteBtn.addEventListener("click", function () {
+                        if (!confirm("Na pewno usunąć tę notatkę?")) return;
+
+                        fetch(API_BASE + `/api/notes/${n.id}`, {
+                            method: "DELETE"
+                        })
+                            .then(res => {
+                                if (!res.ok) throw new Error("Błąd usuwania notatki");
+                                return res.json();
+                            })
+                            .then(() => {
+                                loadNotes();
+                            })
+                            .catch(() => {
+                                alert("Nie udało się usunąć notatki.");
+                            });
+                    });
+
+                    actions.appendChild(editBtn);
+                    actions.appendChild(deleteBtn);
+
+                    div.appendChild(content);
+                    div.appendChild(date);
+                    div.appendChild(actions);
+
+                    notesList.appendChild(div);
+                });
+            })
+            .catch(() => {
+                notesList.innerHTML = "<p>Nie udało się pobrać notatek.</p>";
+            });
+    }
+
+    function addNote() {
+        if (!currentUser) return;
+
+        const content = noteContentInput.value.trim();
+        if (!content) {
+            alert("Wpisz treść notatki.");
+            return;
+        }
+
+        fetch(API_BASE + "/api/notes", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: currentUser.email,
+                content
+            })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Błąd dodawania notatki");
+                return res.json();
+            })
+            .then(() => {
+                noteContentInput.value = "";
+                loadNotes();
+            })
+            .catch(() => {
+                alert("Nie udało się dodać notatki.");
+            });
+    }
+
+    function addAdminUser() {
+        if (!currentUser || currentUser.role !== "admin") {
+            adminUserMsg.textContent = "Brak uprawnień do dodawania użytkowników.";
+            adminUserMsg.style.display = "block";
+            adminUserMsgSuccess.style.display = "none";
+            return;
+        }
+
+        const email = adminUserEmailInput.value.trim();
+        const password = adminUserPassInput.value.trim();
+        const name = adminUserNameInput.value.trim();
+        const rank = adminUserRankInput.value.trim();
+
+        if (!email || !password || !name || !rank) {
+            adminUserMsg.textContent = "Wypełnij wszystkie pola.";
+            adminUserMsg.style.display = "block";
+            adminUserMsgSuccess.style.display = "none";
+            return;
+        }
+
+        fetch(API_BASE + "/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                adminEmail: currentUser.email,
+                adminRole: currentUser.role,
+                email,
+                password,
+                name,
+                rank
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    adminUserMsg.textContent = data.error;
+                    adminUserMsg.style.display = "block";
+                    adminUserMsgSuccess.style.display = "none";
+                } else {
+                    adminUserMsg.textContent = "";
+                    adminUserMsg.style.display = "none";
+                    adminUserMsgSuccess.textContent = "Użytkownik dodany pomyślnie.";
+                    adminUserMsgSuccess.style.display = "block";
+
+                    adminUserEmailInput.value = "";
+                    adminUserPassInput.value = "";
+                    adminUserNameInput.value = "";
+                    adminUserRankInput.value = "";
+
+                    loadUsers();
+                }
+            })
+            .catch(() => {
+                adminUserMsg.textContent = "Nie udało się dodać użytkownika.";
+                adminUserMsg.style.display = "block";
+                adminUserMsgSuccess.style.display = "none";
+            });
+    }
+
+    function loadUsers() {
+        if (!currentUser || currentUser.role !== "admin") return;
+
+        fetch(API_BASE + "/api/users")
+            .then(res => res.json())
+            .then(users => {
+                usersList.innerHTML = "";
+                if (!users.length) {
+                    usersList.innerHTML = "<p>Brak użytkowników.</p>";
+                    return;
+                }
+
+                users.forEach(u => {
+                    const div = document.createElement("div");
+                    div.className = "case-item";
+
+                    const title = document.createElement("div");
+                    title.className = "case-title";
+                    title.textContent = `${u.name || u.email} (${u.email})`;
+
+                    const meta = document.createElement("div");
+                    meta.className = "case-meta";
+                    meta.textContent = `Rola: ${u.role} · Ranga: ${u.rank || "brak"} · Raporty: ${u.canAddReports === false ? "ZABLOKOWANE" : "DOZWOLONE"}`;
+
+                    const actions = document.createElement("div");
+                    actions.className = "user-actions";
+
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.className = "btn-danger";
+                    deleteBtn.textContent = "Usuń konto";
+                    deleteBtn.addEventListener("click", function () {
+                        if (!confirm("Na pewno usunąć to konto?")) return;
+
+                        fetch(API_BASE + `/api/users/${encodeURIComponent(u.email)}`, {
+                            method: "DELETE"
+                        })
+                            .then(res => {
+                                if (!res.ok) throw new Error("Błąd usuwania użytkownika");
+                                return res.json();
+                            })
+                            .then(() => {
+                                loadUsers();
+                            })
+                            .catch(() => {
+                                alert("Nie udało się usunąć użytkownika.");
+                            });
+                    });
+
+                    const blockBtn = document.createElement("button");
+                    blockBtn.className = u.canAddReports === false ? "btn-success" : "btn-secondary";
+                    blockBtn.textContent = u.canAddReports === false ? "Odblokuj raporty" : "Zablokuj raporty";
+                    blockBtn.addEventListener("click", function () {
+                        const newCanAdd = u.canAddReports === false ? true : false;
+
+                        fetch(API_BASE + `/api/users/${encodeURIComponent(u.email)}/reports`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ canAddReports: newCanAdd })
+                        })
+                            .then(res => {
+                                if (!res.ok) throw new Error("Błąd zmiany stanu raportów");
+                                return res.json();
+                            })
+                            .then(() => {
+                                loadUsers();
+                            })
+                            .catch(() => {
+                                alert("Nie udało się zmienić stanu raportów.");
+                            });
+                    });
+
+                    const editBtn = document.createElement("button");
+                    editBtn.className = "btn-secondary";
+                    editBtn.textContent = "Edytuj konto";
+                    editBtn.addEventListener("click", function () {
+                        const newName = prompt("Nowe imię / pseudonim:", u.name || "");
+                        if (newName === null) return;
+                        const newRank = prompt("Nowa ranga:", u.rank || "");
+                        if (newRank === null) return;
+                        const newAvatar = prompt("URL avatara (opcjonalnie):", u.avatarUrl || "");
+                        if (newAvatar === null) return;
+
+                        fetch(API_BASE + `/api/users/${encodeURIComponent(u.email)}`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                name: newName,
+                                rank: newRank,
+                                avatarUrl: newAvatar
+                            })
+                        })
+                            .then(res => {
+                                if (!res.ok) throw new Error("Błąd edycji konta");
+                                return res.json();
+                            })
+                            .then(() => {
+                                loadUsers();
+                                if (currentUser && currentUser.email === u.email) {
+                                    currentUser.name = newName;
+                                    currentUser.rank = newRank;
+                                    currentUser.avatarUrl = newAvatar;
+                                    updateUserPanel(currentUser);
+                                }
+                            })
+                            .catch(() => {
+                                alert("Nie udało się edytować konta.");
+                            });
+                    });
+
+                    actions.appendChild(deleteBtn);
+                    actions.appendChild(blockBtn);
+                    actions.appendChild(editBtn);
+
+                    div.appendChild(title);
+                    div.appendChild(meta);
+                    div.appendChild(actions);
+
+                    usersList.appendChild(div);
+                });
+            })
+            .catch(() => {
+                usersList.innerHTML = "<p>Nie udało się pobrać użytkowników.</p>";
+            });
+    }
+
+    loginBtn.addEventListener("click", handleLogin);
+    clearBtn.addEventListener("click", clearLogin);
+    logoutBtn.addEventListener("click", handleLogout);
+
+    passwordInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            handleLogin();
+        }
+    });
+    emailInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            handleLogin();
+        }
+    });
+
+    menuButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            const targetId = this.dataset.target;
+            setActiveSection(targetId);
+        });
+    });
+
+    searchInput.addEventListener("input", function () {
+        filterContentBySearch(this.value);
+    });
+
+    searchClearBtn.addEventListener("click", function () {
+        searchInput.value = "";
+        filterContentBySearch("");
+    });
+
+    caseAddBtn.addEventListener("click", addCase);
+    noteAddBtn.addEventListener("click", addNote);
+    adminUserAddBtn.addEventListener("click", addAdminUser);
+})();
+</script>
+</body>
+</html>
