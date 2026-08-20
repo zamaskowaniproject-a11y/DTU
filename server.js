@@ -79,6 +79,7 @@ app.post("/api/login", (req, res) => {
     const { email, password } = req.body;
 
     const users = readJson(USERS_FILE);
+    console.log("USERS:", users);
     const user = users.find(u => u.email === email && u.password === password);
 
     if (!user) {
