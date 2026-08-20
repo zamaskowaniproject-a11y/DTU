@@ -5,7 +5,9 @@
   "name": "DTU Commander",
   "rank": "Commander",
   "role": "admin",
+  "canAddReports": true,
   "avatarUrl": ""
 }
+
 
 ]
