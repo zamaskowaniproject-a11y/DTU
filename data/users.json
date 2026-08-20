@@ -1,18 +1,11 @@
 [
-  {
-    "email": "Comm.dtu.223",
-    "password": "DTUX0029348",
-    "name": "DTU Commander",
-    "rank": "Commander",
-    "role": "admin",
-    "avatarUrl": ""
-  },
-  {
-    "email": "test",
-    "password": "test",
-    "name": "test",
-    "rank": "test",
-    "role": "detektyw",
-    "canAddReports": true
-  }
+ {
+  "email": "Comm.dtu.223",
+  "password": "DTUX0029348",
+  "name": "DTU Commander",
+  "rank": "Commander",
+  "role": "admin",
+  "avatarUrl": ""
+}
+
 ]
