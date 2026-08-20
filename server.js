@@ -4,17 +4,20 @@ const path = require("path");
 const multer = require("multer");
 const app = express();
 
-const PORT = 3000;
+// 🔥 NAJWAŻNIEJSZE — PORT DLA RENDER
+const PORT = process.env.PORT || 3000;
 
 const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const CASES_FILE = path.join(DATA_DIR, "cases.json");
 const NOTES_FILE = path.join(DATA_DIR, "notes.json");
 
+// 🔥 UPEWNIJ SIĘ, ŻE FOLDER DATA ISTNIEJE
 if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR);
 }
 
+// 🔥 TWORZENIE PLIKÓW JEŚLI NIE ISTNIEJĄ
 function initFile(filePath, defaultData) {
     if (!fs.existsSync(filePath)) {
         fs.writeFileSync(filePath, JSON.stringify(defaultData, null, 2), "utf8");
@@ -29,7 +32,7 @@ initFile(USERS_FILE, [
         rank: "Commander",
         role: "admin",
         canAddReports: true,
-        avatarUrl: "" // admin może sobie kiedyś ustawić
+        avatarUrl: ""
     }
 ]);
 
@@ -40,6 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
+// 🔥 UPLOADY
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
@@ -65,6 +69,7 @@ const upload = multer({
     }
 });
 
+// 🔥 FUNKCJE JSON
 function readJson(filePath) {
     const raw = fs.readFileSync(filePath, "utf8");
     return JSON.parse(raw);
@@ -74,12 +79,13 @@ function writeJson(filePath, data) {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
 }
 
-// LOGIN
+// 🔥 LOGIN
 app.post("/api/login", (req, res) => {
     const { email, password } = req.body;
 
     const users = readJson(USERS_FILE);
     console.log("USERS:", users);
+
     const user = users.find(u => u.email === email && u.password === password);
 
     if (!user) {
@@ -96,9 +102,9 @@ app.post("/api/login", (req, res) => {
     });
 });
 
-// ADMIN – dodawanie użytkowników
+// 🔥 ADMIN – dodawanie użytkowników
 app.post("/api/users", (req, res) => {
-    const { adminEmail, adminRole, email, password, name, rank } = req.body;
+    const { adminRole, email, password, name, rank } = req.body;
 
     if (adminRole !== "admin") {
         return res.status(403).json({ error: "Brak uprawnień do dodawania użytkowników" });
@@ -126,13 +132,13 @@ app.post("/api/users", (req, res) => {
     return res.json({ success: true, user: newUser });
 });
 
-// ADMIN – lista użytkowników
+// 🔥 ADMIN – lista użytkowników
 app.get("/api/users", (req, res) => {
     const users = readJson(USERS_FILE);
     return res.json(users);
 });
 
-// ADMIN – usuwanie użytkownika
+// 🔥 ADMIN – usuwanie użytkownika
 app.delete("/api/users/:email", (req, res) => {
     const email = req.params.email;
     const users = readJson(USERS_FILE);
@@ -146,10 +152,10 @@ app.delete("/api/users/:email", (req, res) => {
     return res.json({ success: true });
 });
 
-// ADMIN – blokowanie / odblokowanie dodawania raportów (POPRAWIONE)
+// 🔥 ADMIN – blokowanie raportów
 app.put("/api/users/:email/reports", (req, res) => {
     const email = req.params.email;
-    const { canAddReports } = req.body; // oczekujemy true/false
+    const { canAddReports } = req.body;
 
     const users = readJson(USERS_FILE);
     const user = users.find(u => u.email === email);
@@ -164,7 +170,7 @@ app.put("/api/users/:email/reports", (req, res) => {
     return res.json({ success: true, user });
 });
 
-// ADMIN – edycja konta detektywa (imię, ranga, avatar)
+// 🔥 ADMIN – edycja konta
 app.put("/api/users/:email", (req, res) => {
     const email = req.params.email;
     const { name, rank, avatarUrl } = req.body;
@@ -185,13 +191,13 @@ app.put("/api/users/:email", (req, res) => {
     return res.json({ success: true, user });
 });
 
-// SPRAWY – pobieranie listy
+// 🔥 SPRAWY – pobieranie
 app.get("/api/cases", (req, res) => {
     const cases = readJson(CASES_FILE);
     return res.json(cases);
 });
 
-// SPRAWY – dodawanie sprawy
+// 🔥 SPRAWY – dodawanie
 app.post("/api/cases", (req, res) => {
     const { title, description, createdBy } = req.body;
 
@@ -215,7 +221,7 @@ app.post("/api/cases", (req, res) => {
     return res.json({ success: true, case: newCase });
 });
 
-// SPRAWY – edycja sprawy
+// 🔥 SPRAWY – edycja
 app.put("/api/cases/:id", (req, res) => {
     const caseId = parseInt(req.params.id, 10);
     const { title, description } = req.body;
@@ -234,7 +240,7 @@ app.put("/api/cases/:id", (req, res) => {
     return res.json({ success: true, case: foundCase });
 });
 
-// SPRAWY – usuwanie sprawy
+// 🔥 SPRAWY – usuwanie
 app.delete("/api/cases/:id", (req, res) => {
     const caseId = parseInt(req.params.id, 10);
 
@@ -249,7 +255,7 @@ app.delete("/api/cases/:id", (req, res) => {
     return res.json({ success: true });
 });
 
-// DOKUMENTY – dodawanie PDF do sprawy (blokada raportów działa)
+// 🔥 DOKUMENTY – dodawanie PDF
 app.post("/api/cases/:id/documents", upload.single("pdf"), (req, res) => {
     const caseId = parseInt(req.params.id, 10);
     const { uploadedBy } = req.body;
@@ -290,7 +296,7 @@ app.post("/api/cases/:id/documents", upload.single("pdf"), (req, res) => {
     return res.json({ success: true, document: doc });
 });
 
-// DOKUMENTY – pobieranie pliku PDF
+// 🔥 DOKUMENTY – pobieranie PDF
 app.get("/api/documents/:filename", (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(uploadDir, filename);
@@ -302,7 +308,7 @@ app.get("/api/documents/:filename", (req, res) => {
     res.sendFile(filePath);
 });
 
-// NOTATKI – pobieranie notatek użytkownika
+// 🔥 NOTATKI – pobieranie
 app.get("/api/notes", (req, res) => {
     const { email } = req.query;
 
@@ -316,7 +322,7 @@ app.get("/api/notes", (req, res) => {
     return res.json(userNotes);
 });
 
-// NOTATKI – dodawanie notatki
+// 🔥 NOTATKI – dodawanie
 app.post("/api/notes", (req, res) => {
     const { email, content } = req.body;
 
@@ -339,7 +345,7 @@ app.post("/api/notes", (req, res) => {
     return res.json({ success: true, note: newNote });
 });
 
-// NOTATKI – edycja notatki
+// 🔥 NOTATKI – edycja
 app.put("/api/notes/:id", (req, res) => {
     const noteId = parseInt(req.params.id, 10);
     const { content } = req.body;
@@ -357,7 +363,7 @@ app.put("/api/notes/:id", (req, res) => {
     return res.json({ success: true, note });
 });
 
-// NOTATKI – usuwanie notatki
+// 🔥 NOTATKI – usuwanie
 app.delete("/api/notes/:id", (req, res) => {
     const noteId = parseInt(req.params.id, 10);
 
@@ -372,6 +378,7 @@ app.delete("/api/notes/:id", (req, res) => {
     return res.json({ success: true });
 });
 
+// 🔥 START SERWERA
 app.listen(PORT, () => {
-    console.log(`DTU backend działa na http://localhost:${PORT}`);
+    console.log(`DTU backend działa na porcie ${PORT}`);
 });
